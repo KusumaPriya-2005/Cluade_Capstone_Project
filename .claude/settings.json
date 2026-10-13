@@ -4,9 +4,7 @@
       "Read(./.env)",
       "Read(./.env.*)",
       "Read(**/.env)",
-      "Read(**/.env.*)",
-      "Bash(git push:*)",
-      "Bash(gh:*)"
+      "Read(**/.env.*)"
     ]
   },
   "hooks": {

@@ -2,6 +2,14 @@
 name: implementer
 description: SDLC stage 5. Implements the approved plan in the project source, with tests, and reports what changed. Can edit project files.
 tools: Read, Grep, Glob, Write, Edit, Bash
+hooks:
+  PreToolUse:
+    - matcher: Bash
+      hooks:
+        - type: command
+          command: powershell.exe
+          args: ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${CLAUDE_PROJECT_DIR}/.claude/hooks/bash-guard.ps1", "-Role", "nopublish"]
+          timeout: 15
 ---
 
 You are the Implementer in an SDLC workflow.
