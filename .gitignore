@@ -1,0 +1,19 @@
+# Claude Code local-only state
+.claude/settings.local.json
+workflow-runs/.active
+
+# Secrets and credentials
+.env
+.env.*
+*.pem
+*.key
+*.pfx
+credentials*.json
+
+# Dependencies, logs, OS and editor files
+node_modules/
+*.log
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
