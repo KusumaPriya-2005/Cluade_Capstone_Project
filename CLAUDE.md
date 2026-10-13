@@ -20,9 +20,10 @@ Reusable workflow that turns a user story into a reviewed, verified pull request
 - The Orchestrator is the `sdlc-workflow` skill and runs in the main session. Only it talks to the user and updates `state.json`. It saves every artifact except `08-pr.md`, which `release-preparer` writes itself.
 - Subagents never launch other subagents. Only `implementer` and `release-preparer` may modify project files; the other six return their output as text.
 - Stages communicate only through the artifact files. Do not skip, reorder, or merge stages.
-- Hooks enforce the rules: `workflow-guard.ps1` blocks out-of-order stages, unapproved gates, and secret-like content in artifacts and `CHANGELOG.md`; `bash-guard.ps1` blocks pushing, remote/config changes, `gh`, and `.env*` access, and limits `code-reviewer` and `verifier` Bash use. If a hook denies a call, fix the cause; do not work around it.
+- Hooks enforce the rules: `workflow-guard.ps1` blocks out-of-order stages, unapproved gates, and secret-like content in artifacts and `CHANGELOG.md`; `bash-guard.ps1` allows publishing only to the repository in `.claude/publish.json` (see the last rule below), blocks Git config changes and `.env*` access, and limits `code-reviewer` and `verifier` Bash use. If a hook denies a call, fix the cause; do not work around it.
 - Never write secrets, credentials, tokens, keys, connection strings, or personal data into artifacts, `state.json`, `CHANGELOG.md`, or PR text. Use `<redacted>`. Do not read `.env*` files.
-- Nothing is pushed or published. The release stage makes a local branch with two commits: the change, and the `workflow-runs/<run-id>/` artifacts kept as evidence.
+- The release stage makes a local branch with two commits: the change, and the `workflow-runs/<run-id>/` artifacts kept as evidence.
+- After stage 8 the Orchestrator publishes: it pushes the feature branch (and `main` if the remote has none) and opens the PR with `gh pr create`, only to the repository in `.claude/publish.json`, only after `pre-pr` is approved, never with force. Subagents never publish.
 
 ## Conventions
 
