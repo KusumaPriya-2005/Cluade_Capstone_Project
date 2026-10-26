@@ -1,0 +1,24 @@
+{
+  "run_id": "20261013-163235-password-reset",
+  "story": "As a user, I want to reset my password using my registered email address so that I can regain access to my account if I forget my password.",
+  "constraints": "Python and pytest.",
+  "decisions": {
+    "python_version": "3.11 minimum (requires-python >=3.11); interpreter in use is 3.14.7, approved",
+    "scope": "FR-11 session revocation hook and FR-12 notification kept; in-memory persistence only; proposed defaults accepted (30 min TTL, exclusive expiry, 12-128 char policy with denylist, 5/hr per email, 20/hr per client, reject reuse of current password, coverage not a hard gate)",
+    "invalid_confirm_limit": "10 per client per hour (accepted)",
+    "nfkc_password_normalisation": "keep (accepted)",
+    "log_user_id_on_revoker_failure": "declined; fallback applies: no identifier in any log event, only fixed event text and exception class name",
+    "pytest_cov": "not added; pytest is the only dev dependency",
+    "pytest_install": "one-time 'pip install pytest' allowed if pytest is missing (approved at checkpoint 3; pytest 9.1.1 was installed)",
+    "design_review_rounds": "2 (round 1: approve with changes, 3 blocking; round 2: approve). Advisory notes N1-N5 folded into the plan.",
+    "code_review_rounds": "2 (round 1: pass with advisories A-1..A-6; rework fixed A-1, A-2, A-3; round 2: pass). Optional advisories A-4..A-9 left open.",
+    "publishing": "local only: local branch and two local commits, no push, no remote PR (decided at checkpoint 4)",
+    "pr_notes": "State in the PR that coverage was not measured and tests ran only on Python 3.14.7."
+  },
+  "approvals": {
+    "requirements": true,
+    "design-review": true,
+    "plan": true,
+    "pre-pr": true
+  }
+}

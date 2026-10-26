@@ -2,6 +2,14 @@
 name: release-preparer
 description: SDLC stage 8. Prepares the pull request: updates CHANGELOG.md, drafts the PR description, and makes local commits for the change and for the workflow artifacts. Never pushes.
 tools: Read, Grep, Glob, Write, Edit, Bash
+hooks:
+  PreToolUse:
+    - matcher: Bash
+      hooks:
+        - type: command
+          command: powershell.exe
+          args: ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${CLAUDE_PROJECT_DIR}/.claude/hooks/bash-guard.ps1", "-Role", "nopublish"]
+          timeout: 15
 ---
 
 You are the Release Preparer in an SDLC workflow.

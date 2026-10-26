@@ -1,0 +1,21 @@
+{
+  "run_id": "20261026-215752-task-management",
+  "story": "KAN-1 Manage Tasks (Add, View, Edit, Delete, Complete, Filter, and Save Tasks): seven user stories US-01 to US-07 covering add a task, view all tasks, complete/reopen a task, edit a task title, delete a task, filter by All/Pending/Completed, and persist tasks between sessions. Full text in Inputs/test_user_story.md.",
+  "decisions": {
+    "branching": "run started on branch feature/profile-update with uncommitted files outside workflow-runs/ (SKILL.md, CLAUDE.md, sdlc-orchestrator.md, .mcp.json, Inputs/, docs/); user chose Continue anyway. The earlier run 20261014-113302-profile-update is unfinished and its .active pointer was replaced.",
+    "requirements_defaults": "approved at checkpoint 1 as proposed in 01-requirements.md: Python 3.11+ standard library only; new package src/taskmgr; thin argparse CLI; JSON file behind a TaskRepository Protocol with in-memory implementation; generated ids, duplicate titles allowed; task-not-found error on unknown id; corrupt file aborts start-up; creation order; default filter All",
+    "design_review": "round 1: approve with changes, blocking B1 and B2, advisory F1-F13; 1 architect rework round; round 2: approve, no blocking, advisory N1-N7 folded into the plan",
+    "design_approved": "02-architecture.md revision 2 and 03-design-review.md round 2 approved at checkpoint 2, including rejecting control characters (tabs, newlines, ESC, etc.) inside titles (N5 default)",
+    "plan": "04-plan.md (tasks T1..T8) approved at checkpoint 3 with its defaults: distribution name stays pwreset (mention in PR); ids starting with '-' need '--'",
+    "implementation": "301 tests pass (176 new); code review pass with advisory A1-A7 left open; verification ready, all 17 acceptance criteria met",
+    "pre_pr": "approved at checkpoint 4 as 'Approve and publish', with the user's knowledge that (1) the PR from this branch also contains the earlier feature/profile-update commits and (2) the unrelated uncommitted files (.claude/skills/sdlc-workflow/SKILL.md, CLAUDE.md, .claude/agents/sdlc-orchestrator.md, .mcp.json, Inputs/, docs/) go into the feature commit. Orchestrator checked .mcp.json and docs/: no credentials or personal data.",
+    "release_scope": "after the first stage 8 launch was denied by the permission classifier, the user said 'you decide and continue'; the Orchestrator narrowed the feature commit to src/taskmgr/, the seven tests/test_taskmgr_*.py files, tests/taskmgr_helpers.py and CHANGELOG.md. The unrelated files (.claude/skills/sdlc-workflow/SKILL.md, CLAUDE.md, .claude/agents/sdlc-orchestrator.md, .mcp.json, Inputs/, docs/) and the other run's folder stay uncommitted.",
+    "pr_notes": "State in the PR: distribution is still named pwreset and now ships two packages (pwreset, taskmgr); no [project.scripts], run as python -m taskmgr; concurrent processes can lose an update; README not updated; code-review advisories A1-A7 left open; Jira KAN-1; the branch is based on feature/profile-update so the PR also shows that run's earlier commits."
+  },
+  "approvals": {
+    "requirements": true,
+    "design-review": true,
+    "plan": true,
+    "pre-pr": true
+  }
+}

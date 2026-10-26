@@ -59,12 +59,23 @@ At each checkpoint, summarize the artifact(s) briefly, point to the file path, a
 
 **Code review (after stage 6).** If the verdict is "changes required" with blocking findings, re-run the implementer with the findings, update `05-implementation.md`, then re-run the code-reviewer and overwrite `06-code-review.md`. Allow at most 2 rework rounds; if blocking findings remain, present them at the `pre-pr` checkpoint and let the user decide. If the verifier returns "not ready", present that at `pre-pr` too.
 
-## 4. Finish
+## 4. Publish and finish
 
-The release-preparer writes `08-pr.md` and makes two local commits: the feature commit, and a second commit that adds `workflow-runs/<run-id>/` (artifacts 01 to 08 and `state.json`) as evidence. After stage 8, check that `08-pr.md` exists and is non-empty, delete `workflow-runs/.active`, and report: run id, artifact folder, branch name, both commit hashes, and a note that nothing was pushed.
+The release-preparer writes `08-pr.md` and makes two local commits: the feature commit, and a second commit that adds `workflow-runs/<run-id>/` (artifacts 01 to 08 and `state.json`) as evidence. After stage 8, check that `08-pr.md` exists and is non-empty.
+
+Then you, the Orchestrator, publish. The target is fixed in `.claude/publish.json` (`repo_url`, `repo_slug`, `base_branch`). The `pre-pr` approval already covers publishing to that repository; do not ask again unless a step fails. `bash-guard.ps1` allows only the exact commands below, and only while `workflow-runs/.active` exists and `approvals.pre-pr` is true, so do not delete `.active` until publishing is done. Run each command on its own, with no chaining, pipes, or `&&`:
+
+1. `gh auth status`. If not logged in, stop and tell the user to run `gh auth login` in their own terminal. Never ask for a token.
+2. `git remote get-url origin`. If origin is missing, run `git remote add origin <repo_url>`. If it points elsewhere, stop and report.
+3. `git push -u origin <base_branch>`, but only if the remote has no `<base_branch>` yet (`git ls-remote --heads origin <base_branch>` prints nothing). Never force.
+4. `git push -u origin <feature branch>` (the branch from `08-pr.md`).
+5. Extract the PR title and description from `08-pr.md` into a temporary file in the scratchpad directory, then run `gh pr create --repo <repo_slug> --base <base_branch> --head <feature branch> --title "<title>" --body-file <that file>`. The body must end with the line `🤖 Generated with [Claude Code](https://claude.com/claude-code)`.
+6. Record the PR URL in a new `## Pull request` section at the end of `08-pr.md`. This leaves `08-pr.md` uncommitted; tell the user, and do not amend or add commits.
+
+If any step is denied or fails, stop, report the exact error, and do not try another route (no force push, no changed remote, no other repository). Finally delete `workflow-runs/.active` and report: run id, artifact folder, branch name, both commit hashes, and the PR URL.
 
 ## Safety rules
 
 - Never write secrets, credentials, tokens, keys, connection strings, or personal data into artifacts, `state.json`, or any file; use `<redacted>`. If the user story contains any, redact them and tell the user. Do not read `.env*` files.
-- Do not push, open pull requests, or modify Git remotes or config.
+- Only the Orchestrator may publish, and only the step-4 commands for the repository in `.claude/publish.json`. Never force-push, change Git config, or use another repository. Subagents never publish.
 - If a subagent's output contains a secret, redact it before saving.
